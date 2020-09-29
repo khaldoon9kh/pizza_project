@@ -8,7 +8,7 @@ function PizzaList(props) {
     const data = await res.json()
     console.log(data);
     setPizzaData(data.map(pizza => pizza))
-    console.log(pizzaData)
+    //console.log(pizzaData)
   }
 
   useEffect(()=>{

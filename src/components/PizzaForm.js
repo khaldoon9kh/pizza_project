@@ -1,21 +1,34 @@
 import React,{useEffect, useState} from "react"
 
 const PizzaForm = (props) => {
-  //console.log(props)
+  console.log(props)
   const [pizzaState, setPizzaState] = useState({
-    topping: "",
-    size: "",
-    vegetarian: false
+    topping: props.onPizzaSelect.topping,
+    size: props.onPizzaSelect.size,
+    vegetarian: props.onPizzaSelect.vegetarian,
+    id: props.onPizzaSelect.id
   })
+
   const addPizza = async () => {
-    fetch('http://localhost:3000/pizzas', {
+    if (!props.onPizzaSelect.id){
+    fetch(`http://localhost:3000/pizzas`, {
               method: "POST",
               headers: {'Content-Type':'application/json'},
               body: JSON.stringify(pizzaState)
             }).then((res) => res.json())
             .then((data) =>  console.log(data))
             .catch((err)=>console.log(err))
+    }else{
+      fetch(`http://localhost:3000/pizzas/${props.onPizzaSelect.id}`, {
+              method: "PUT",
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(pizzaState)
+            }).then((res) => res.json())
+            .then((data) =>  console.log(data))
+            .catch((err)=>console.log(err))
+    }
   }
+
   const handleInputChange = (e) => {
     setPizzaState({...pizzaState, topping: e.target.value})
   }
@@ -44,17 +57,21 @@ const PizzaForm = (props) => {
   return(
       <div className="form-row">
         <div className="col-5">
-            <input type="text" onChange={e => handleInputChange(e)} className="form-control" placeholder="Pizza Topping" value={pizzaState.toppings}/>
+            <input type="text" className="form-control" placeholder="Pizza Topping" 
+            onChange={e => handleInputChange(e)}
+            value={pizzaState.topping}/>
         </div>
         <div className="col">
-          <select value={pizzaState.size} className="form-control" onChange={e => handleSelectChange(e)}>
+          <select className="form-control" 
+          value={pizzaState.size}
+          onChange={e => handleSelectChange(e)}>
             <option value="Small">Small</option>
             <option value="Medium">Medium</option>
             <option value="Large">Large</option>
           </select>
         </div>
         <div className="col">
-          <select value={pizzaState.vegetaran} className="form-control" onChange={e => handleTagChange(e)}>
+          <select value={pizzaState.vegetarian} className="form-control" onChange={e => handleTagChange(e)}>
             <option value={true} >Vegetarian</option>
             <option value={false}>Not Vegetarian</option>
           </select>
